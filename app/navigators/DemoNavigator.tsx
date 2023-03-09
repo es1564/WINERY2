@@ -5,9 +5,8 @@ import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "../i18n"
-import { DemoCommunityScreen, DemoShowroomScreen, DemoDebugScreen } from "../screens"
+import { DemoCommunityScreen, DemoShowroomScreen, DemoDebugScreen, Test3Screen } from "../screens"
 import { DemoPodcastListScreen } from "../screens/DemoPodcastListScreen"
-import { Test3Screen } from "../screens/test3Screen"
 import { colors, spacing, typography } from "../theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
@@ -87,7 +86,7 @@ export function DemoNavigator() {
         component={Test3Screen}
         options={{
           tabBarLabel: translate("demoNavigator.test3Tab"),
-          tabBarIcon: ({ focused }) => <Icon icon="community" color={focused && colors.tint} />,
+          tabBarIcon: ({ focused }) => <Icon icon="view" color={focused && colors.tint} />,
         }}
       />
     </Tab.Navigator>

@@ -102,12 +102,12 @@ fetch(url, options)
               style={$emptyState}
               headingTx={
                 episodeStore.favoritesOnly
-                  ? "demoPodcastListScreen.noFavoritesEmptyState.heading"
+                  ? "test3Screen.noFavoritesEmptyState.heading"
                   : undefined
               }
               contentTx={
                 episodeStore.favoritesOnly
-                  ? "demoPodcastListScreen.noFavoritesEmptyState.content"
+                  ? "test3Screen.noFavoritesEmptyState.content"
                   : undefined
               }
               button={episodeStore.favoritesOnly ? null : undefined}
@@ -119,7 +119,7 @@ fetch(url, options)
         }
         ListHeaderComponent={
           <View style={$heading}>
-            <Text preset="heading" tx="demoPodcastListScreen.title" />
+            <Text preset="heading" tx="test3Screen.title" />
             {(episodeStore.favoritesOnly || episodeStore.episodesForList.length > 0) && (
               <View style={$toggle}>
                 <Toggle
@@ -128,10 +128,10 @@ fetch(url, options)
                     episodeStore.setProp("favoritesOnly", !episodeStore.favoritesOnly)
                   }
                   variant="switch"
-                  labelTx="demoPodcastListScreen.onlyFavorites"
+                  labelTx="test3Screen.onlyFavorites"
                   labelPosition="left"
                   labelStyle={$labelStyle}
-                  accessibilityLabel={translate("demoPodcastListScreen.accessibility.switch")}
+                  accessibilityLabel={translate("test3Screen.accessibility.switch")}
                 />
               </View>
             )}
@@ -198,7 +198,7 @@ const EpisodeCard = observer(function EpisodeCard({
     () =>
       Platform.select<AccessibilityProps>({
         ios: {
-          accessibilityHint: translate("demoPodcastListScreen.accessibility.cardHint", {
+          accessibilityHint: translate("test3Screen.accessibility.cardHint", {
             action: isFavorite ? "unfavorite" : "favorite",
           }),
         },
@@ -207,7 +207,7 @@ const EpisodeCard = observer(function EpisodeCard({
           accessibilityActions: [
             {
               name: "longpress",
-              label: translate("demoPodcastListScreen.accessibility.favoriteAction"),
+              label: translate("test3Screen.accessibility.favoriteAction"),
             },
           ],
           onAccessibilityAction: ({ nativeEvent }) => {
@@ -290,8 +290,8 @@ const EpisodeCard = observer(function EpisodeCard({
           style={[$favoriteButton, isFavorite && $unFavoriteButton]}
           accessibilityLabel={
             isFavorite
-              ? translate("demoPodcastListScreen.accessibility.unfavoriteIcon")
-              : translate("demoPodcastListScreen.accessibility.favoriteIcon")
+              ? translate("test3Screen.accessibility.unfavoriteIcon")
+              : translate("test3Screen.accessibility.favoriteIcon")
           }
           LeftAccessory={ButtonLeftAccessory}
         >
@@ -301,8 +301,8 @@ const EpisodeCard = observer(function EpisodeCard({
             weight="medium"
             text={
               isFavorite
-                ? translate("demoPodcastListScreen.unfavoriteButton")
-                : translate("demoPodcastListScreen.favoriteButton")
+                ? translate("test3Screen.unfavoriteButton")
+                : translate("test3Screen.favoriteButton")
             }
           />
         </Button>
