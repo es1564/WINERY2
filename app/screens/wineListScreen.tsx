@@ -61,6 +61,7 @@ export const WineListScreen = observer(function WineListScreen(
   _props: DemoTabScreenProps<"DemoPodcastList">,
 ) {
   const { episodeStore } = useStores()
+  const { wineListStore } = useStores()
 
   const [refreshing, setRefreshing] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
@@ -99,11 +100,19 @@ fetch(url, options)
     })()
   }, [episodeStore])
 
+  useEffect(() => {
+    ;(async function load() {
+      setIsLoading(true)
+      await wineListStore.fetchWineLists()
+      setIsLoading(false)
+    })()
+  }, [wineListStore])
 
   // simulate a longer refresh, if the refresh is too fast for UX
   async function manualRefresh() {
     setRefreshing(true)
     await Promise.all([episodeStore.fetchEpisodes(), delay(750)])
+    await Promise.all([wineListStore.fetchWineLists(), delay(750)])
     setRefreshing(false)
   }
 
@@ -213,20 +222,78 @@ fetch(url, options)
         </Button>
       </View>
 
-      <FlatList
+      {/* <FlatList
         data={wineList}
         renderItem={renderItem}
         onEndReachedThreshold={0}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
+      /> */}
+
+
+
+
+
+
+      <FlatList<WineList>
+        data={wineList}
+        // extraData={wineListStore.favorites.length + wineListStore.wineLists.length}
+        // contentContainerStyle={$flatListContentContainer}
+        // refreshing={refreshing}
+        // onRefresh={manualRefresh}
+        // ListEmptyComponent={
+        //   isLoading ? (
+        //     <ActivityIndicator />
+        //   ) : (
+        //     <EmptyState
+        //       preset="generic"
+        //       style={$emptyState}
+        //       headingTx={
+        //         wineListStore.favoritesOnly
+        //           ? "test3Screen.noFavoritesEmptyState.heading"
+        //           : undefined
+        //       }
+        //       contentTx={
+        //         wineListStore.favoritesOnly
+        //           ? "test3Screen.noFavoritesEmptyState.content"
+        //           : undefined
+        //       }
+        //       button={wineListStore.favoritesOnly ? null : undefined}
+        //       buttonOnPress={manualRefresh}
+        //       imageStyle={$emptyStateImage}
+        //       ImageProps={{ resizeMode: "contain" }}
+        //     />
+        //   )
+        // }
+        // ListHeaderComponent={
+        //   <View style={$heading}>
+        //     <Text preset="heading" tx="test3Screen.title" />
+        //     {(wineListStore.favoritesOnly || wineListStore.wineListsForList.length > 0) && (
+        //       <View style={$toggle}>
+        //         <Toggle
+        //           value={wineListStore.favoritesOnly}
+        //           onValueChange={() =>
+        //             wineListStore.setProp("favoritesOnly", !wineListStore.favoritesOnly)
+        //           }
+        //           variant="switch"
+        //           labelTx="test3Screen.onlyFavorites"
+        //           labelPosition="left"
+        //           labelStyle={$labelStyle}
+        //           accessibilityLabel={translate("test3Screen.accessibility.switch")}
+        //         />
+        //       </View>
+        //     )}
+        //   </View>
+        // }
+        renderItem={({ item }) => (
+          <WineListCard
+            key={item.WINE_ID}
+            wineList={item}
+            isFavorite={wineListStore.hasFavorite(item)}
+            onPressFavorite={() => wineListStore.toggleFavorite(item)}
+          />
+        )}
       />
-
-
-
-
-
-
-      
 
 <View>
   <Text>0000</Text>
@@ -355,20 +422,30 @@ const WineListCard = observer(function WineListCard({
           <Text
             style={$metadataText}
             size="xxs"
-            accessibilityLabel={wineList.datePublished.accessibilityLabel}
+            // accessibilityLabel={wineList.datePublished.accessibilityLabel}
           >
-            {wineList.datePublished.textLabel}
+            {wineList.WINE_CTGRY}
+            {/* {wineList.datePublished.textLabel} */}
           </Text>
           <Text
             style={$metadataText}
             size="xxs"
-            accessibilityLabel={wineList.duration.accessibilityLabel}
+            // accessibilityLabel={wineList.duration.accessibilityLabel}
           >
-            {wineList.duration.textLabel}
+            {wineList.WINE_PRC}
+            {/* {wineList.duration.textLabel} */}
           </Text>
         </View>
       }
-      content={`${wineList.parsedTitleAndSubtitle.title} - ${wineList.parsedTitleAndSubtitle.subtitle}`}
+      content={
+        <View>
+          <Text>{wineList.WINE_NM}</Text>
+          <Text>------</Text>
+          <Text>{wineList.WINE_AREA_NM}</Text>
+        </View>
+      }
+      // content={wineList.WINE_NM}
+      // content={`${wineList.parsedTitleAndSubtitle.title} - ${wineList.parsedTitleAndSubtitle.subtitle}`}
       {...accessibilityHintProps}
       RightComponent={<Image source={imageUri} style={$itemThumbnail} />}
       FooterComponent={
@@ -385,7 +462,7 @@ const WineListCard = observer(function WineListCard({
         >
           <Text
             size="xxs"
-            accessibilityLabel={wineList.duration.accessibilityLabel}
+            // accessibilityLabel={wineList.duration.accessibilityLabel}
             weight="medium"
             text={
               isFavorite

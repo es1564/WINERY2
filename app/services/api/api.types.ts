@@ -1,3 +1,6 @@
+import { WineList } from "../../models/WineList"
+import { GeneralApiProblem } from "./apiProblem"
+
 /**
  * These types indicate the shape of the data you expect to receive from your
  * API endpoint, assuming it's a JSON object like we have.
@@ -33,6 +36,10 @@ export interface ApiFeedResponse {
   }
   items: EpisodeItem[]
 }
+
+
+export type GetWineListsResult = { kind: "ok"; wineLists: WineList[]; totalCnt: number } | GeneralApiProblem
+export type GetWineListResult = { kind: "ok"; wineList: WineList } | GeneralApiProblem
 
 /**
  * The options used to configure apisauce.
