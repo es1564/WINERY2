@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 
-import React, { Fragment, useEffect, useMemo, useState } from "react"
+import React, { FC, Fragment, useEffect, useMemo, useState } from "react"
 import {
   AccessibilityProps,
   ActivityIndicator,
@@ -57,9 +57,9 @@ const rnrImage2 = require("../../assets/images/josswine.png")
 const rnrImage3 = require("../../assets/images/josswine.png")
 const rnrImages = [rnrImage1, rnrImage2, rnrImage3]
 
-export const WineListScreen = observer(function WineListScreen(
-  _props: DemoTabScreenProps<"DemoPodcastList">,
-) {
+export const WineListScreen: FC<DemoTabScreenProps<"WineList">> = observer(
+  function WineListScreen(_props) {
+
   const { episodeStore } = useStores()
   const { wineListStore } = useStores()
 
@@ -90,15 +90,13 @@ fetch(url, options)
 	.catch(err => console.error('error:' + err));
 
   
-
-  // initially, kick off a background refresh without the refreshing UI
   useEffect(() => {
     ;(async function load() {
       setIsLoading(true)
-      await episodeStore.fetchEpisodes()
+      await testFile()
       setIsLoading(false)
     })()
-  }, [episodeStore])
+  }, [])
 
   useEffect(() => {
     ;(async function load() {
@@ -111,7 +109,6 @@ fetch(url, options)
   // simulate a longer refresh, if the refresh is too fast for UX
   async function manualRefresh() {
     setRefreshing(true)
-    await Promise.all([episodeStore.fetchEpisodes(), delay(750)])
     await Promise.all([wineListStore.fetchWineLists(), delay(750)])
     setRefreshing(false)
   }
@@ -139,8 +136,8 @@ fetch(url, options)
             data.push(res.rows.item(i));
           }
           //this.setState({dataSource: [...this.state.dataSource, ...data]});
-          console.log(data)
-          setWineList(data)
+          // console.log(data)
+          // setWineList(data)
 
         }, (error) => {
           console.log(' failed - ' + error);
@@ -152,63 +149,63 @@ fetch(url, options)
 
 
 
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      key={index + item.title + item.chDt}
-      // onPress={throttle(() => {
-      //   onClickItem(item.bbsSeq);
-      // })}
-    >
-      <Card
-        style={{flex:1}}
-        verticalAlignment="force-footer-bottom"
-        HeadingComponent={
-          <View style={$metadata}>
-            <Text
-              style={$metadataText}
-              size="xxs"
-              // accessibilityLabel={episode.datePublished.accessibilityLabel}
-            >
-              {item.WINE_CTGRY}
-            </Text>
-          </View>
-        }
+  // const renderItem = ({ item, index }) => (
+  //   <TouchableOpacity
+  //     key={index + item.title + item.chDt}
+  //     // onPress={throttle(() => {
+  //     //   onClickItem(item.bbsSeq);
+  //     // })}
+  //   >
+  //     <Card
+  //       style={{flex:1}}
+  //       verticalAlignment="force-footer-bottom"
+  //       HeadingComponent={
+  //         <View style={$metadata}>
+  //           <Text
+  //             style={$metadataText}
+  //             size="xxs"
+  //             // accessibilityLabel={episode.datePublished.accessibilityLabel}
+  //           >
+  //             {item.WINE_CTGRY}
+  //           </Text>
+  //         </View>
+  //       }
 
-        content={item.WINE_NM}
-        // content={`${episode.parsedTitleAndSubtitle.title} - ${episode.parsedTitleAndSubtitle.subtitle}`}
-        // {...accessibilityHintProps}
-        RightComponent={<Image source={rnrImage1} style={$itemThumbnail} />}
-        FooterComponent={
-          <Button>123</Button>
-          // <Button
-          //   onPress={handlePressFavorite}
-          //   onLongPress={handlePressFavorite}
-          //   style={[$favoriteButton, isFavorite && $unFavoriteButton]}
-          //   accessibilityLabel={
-          //     isFavorite
-          //       ? translate("test3Screen.accessibility.unfavoriteIcon")
-          //       : translate("test3Screen.accessibility.favoriteIcon")
-          //   }
-          //   LeftAccessory={ButtonLeftAccessory}
-          // >
-          //   <Text
-          //     size="xxs"
-          //     accessibilityLabel={episode.duration.accessibilityLabel}
-          //     weight="medium"
-          //     text={
-          //       isFavorite
-          //         ? translate("test3Screen.unfavoriteButton")
-          //         : translate("test3Screen.favoriteButton")
-          //     }
-          //   />
-          // </Button>
-        }
-      />
-    </TouchableOpacity>
+  //       content={item.WINE_NM}
+  //       // content={`${episode.parsedTitleAndSubtitle.title} - ${episode.parsedTitleAndSubtitle.subtitle}`}
+  //       {...accessibilityHintProps}
+  //       RightComponent={<Image source={rnrImage1} style={$itemThumbnail} />}
+  //       FooterComponent={
+  //         <Button>123</Button>
+  //         // <Button
+  //         //   onPress={handlePressFavorite}
+  //         //   onLongPress={handlePressFavorite}
+  //         //   style={[$favoriteButton, isFavorite && $unFavoriteButton]}
+  //         //   accessibilityLabel={
+  //         //     isFavorite
+  //         //       ? translate("wineListScreen.accessibility.unfavoriteIcon")
+  //         //       : translate("wineListScreen.accessibility.favoriteIcon")
+  //         //   }
+  //         //   LeftAccessory={ButtonLeftAccessory}
+  //         // >
+  //         //   <Text
+  //         //     size="xxs"
+  //         //     accessibilityLabel={episode.duration.accessibilityLabel}
+  //         //     weight="medium"
+  //         //     text={
+  //         //       isFavorite
+  //         //         ? translate("wineListScreen.unfavoriteButton")
+  //         //         : translate("wineListScreen.favoriteButton")
+  //         //     }
+  //         //   />
+  //         // </Button>
+  //       }
+  //     />
+  //   </TouchableOpacity>
 
 
 
-  );
+  // );
 
   
   return (
@@ -236,55 +233,57 @@ fetch(url, options)
 
 
       <FlatList<WineList>
-        data={wineList}
-        // extraData={wineListStore.favorites.length + wineListStore.wineLists.length}
-        // contentContainerStyle={$flatListContentContainer}
-        // refreshing={refreshing}
-        // onRefresh={manualRefresh}
-        // ListEmptyComponent={
-        //   isLoading ? (
-        //     <ActivityIndicator />
-        //   ) : (
-        //     <EmptyState
-        //       preset="generic"
-        //       style={$emptyState}
-        //       headingTx={
-        //         wineListStore.favoritesOnly
-        //           ? "test3Screen.noFavoritesEmptyState.heading"
-        //           : undefined
-        //       }
-        //       contentTx={
-        //         wineListStore.favoritesOnly
-        //           ? "test3Screen.noFavoritesEmptyState.content"
-        //           : undefined
-        //       }
-        //       button={wineListStore.favoritesOnly ? null : undefined}
-        //       buttonOnPress={manualRefresh}
-        //       imageStyle={$emptyStateImage}
-        //       ImageProps={{ resizeMode: "contain" }}
-        //     />
-        //   )
-        // }
-        // ListHeaderComponent={
-        //   <View style={$heading}>
-        //     <Text preset="heading" tx="test3Screen.title" />
-        //     {(wineListStore.favoritesOnly || wineListStore.wineListsForList.length > 0) && (
-        //       <View style={$toggle}>
-        //         <Toggle
-        //           value={wineListStore.favoritesOnly}
-        //           onValueChange={() =>
-        //             wineListStore.setProp("favoritesOnly", !wineListStore.favoritesOnly)
-        //           }
-        //           variant="switch"
-        //           labelTx="test3Screen.onlyFavorites"
-        //           labelPosition="left"
-        //           labelStyle={$labelStyle}
-        //           accessibilityLabel={translate("test3Screen.accessibility.switch")}
-        //         />
-        //       </View>
-        //     )}
-        //   </View>
-        // }
+        // data={wineList}
+        data={wineListStore.wineListsForList}
+        extraData={wineListStore.favorites.length + wineListStore.wineLists.length}
+        contentContainerStyle={$flatListContentContainer}
+        refreshing={refreshing}
+        onRefresh={manualRefresh}
+        ListEmptyComponent={
+          isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <EmptyState
+              preset="generic"
+              style={$emptyState}
+              headingTx={
+                wineListStore.favoritesOnly
+                  ? "wineListScreen.noFavoritesEmptyState.heading"
+                  : undefined
+              }
+              contentTx={
+                wineListStore.favoritesOnly
+                  ? "wineListScreen.noFavoritesEmptyState.content"
+                  : undefined
+              }
+              button={wineListStore.favoritesOnly ? null : undefined}
+              buttonOnPress={manualRefresh}
+              imageStyle={$emptyStateImage}
+              ImageProps={{ resizeMode: "contain" }}
+            />
+          )
+        }
+        ListHeaderComponent={
+          <View style={$heading}>
+            <Text preset="heading" tx="wineListScreen.title" />
+            {/* {(wineListStore.favoritesOnly || wineListStore.wineListsForList.length > 0) && ( */}
+            {(true) && (
+              <View style={$toggle}>
+                <Toggle
+                  value={wineListStore.favoritesOnly}
+                  onValueChange={() =>
+                    wineListStore.setProp("favoritesOnly", !wineListStore.favoritesOnly)
+                  }
+                  variant="switch"
+                  label="wineListScreen.onlyFavorites"
+                  labelPosition="left"
+                  labelStyle={$labelStyle}
+                  accessibilityLabel={translate("wineListScreen.accessibility.switch")}
+                />
+              </View>
+            )}
+          </View>
+        }
         renderItem={({ item }) => (
           <WineListCard
             key={item.WINE_ID}
@@ -294,10 +293,6 @@ fetch(url, options)
           />
         )}
       />
-
-<View>
-  <Text>0000</Text>
-</View>
 
 
     </Screen>
@@ -353,7 +348,7 @@ const WineListCard = observer(function WineListCard({
     () =>
       Platform.select<AccessibilityProps>({
         ios: {
-          accessibilityHint: translate("test3Screen.accessibility.cardHint", {
+          accessibilityHint: translate("wineListScreen.accessibility.cardHint", {
             action: isFavorite ? "unfavorite" : "favorite",
           }),
         },
@@ -362,7 +357,7 @@ const WineListCard = observer(function WineListCard({
           accessibilityActions: [
             {
               name: "longpress",
-              label: translate("test3Screen.accessibility.favoriteAction"),
+              label: translate("wineListScreen.accessibility.favoriteAction"),
             },
           ],
           onAccessibilityAction: ({ nativeEvent }) => {
@@ -381,7 +376,8 @@ const WineListCard = observer(function WineListCard({
   }
 
   const handlePressCard = () => {
-  //   openLinkInBrowser(episode.enclosure.link)
+    console.log('handlePressCardhandlePressCard')
+    // openLinkInBrowser(wineList.enclosure.link)
   }
 
   const ButtonLeftAccessory = useMemo(
@@ -455,8 +451,8 @@ const WineListCard = observer(function WineListCard({
           style={[$favoriteButton, isFavorite && $unFavoriteButton]}
           accessibilityLabel={
             isFavorite
-              ? translate("test3Screen.accessibility.unfavoriteIcon")
-              : translate("test3Screen.accessibility.favoriteIcon")
+              ? translate("wineListScreen.accessibility.unfavoriteIcon")
+              : translate("wineListScreen.accessibility.favoriteIcon")
           }
           LeftAccessory={ButtonLeftAccessory}
         >
@@ -466,8 +462,8 @@ const WineListCard = observer(function WineListCard({
             weight="medium"
             text={
               isFavorite
-                ? translate("test3Screen.unfavoriteButton")
-                : translate("test3Screen.favoriteButton")
+                ? translate("wineListScreen.unfavoriteButton")
+                : translate("wineListScreen.favoriteButton")
             }
           />
         </Button>

@@ -17,12 +17,12 @@ interface Enclosure {
 export const WineListModel = types
   .model("WineList")
   .props({
-    guid: types.identifier,
-    WINE_ID: "",
-    WINE_NM: "",
-    WINE_AREA_NM: "",
-    WINE_CTGRY: "",
-    WINE_PRC: "",
+    // guid: types.identifier,
+    WINE_ID: types.identifierNumber,
+    WINE_NM: types.maybe(types.string),
+    WINE_AREA_NM: types.maybe(types.string),
+    WINE_CTGRY: types.maybe(types.string),
+    WINE_PRC: types.maybe(types.number),
     title: "",
     pubDate: "", // Ex: 2022-08-12 21:05:36
     link: "",
@@ -36,7 +36,7 @@ export const WineListModel = types
   .actions(withSetPropAction)
   .views((wineList) => ({
     get parsedTitleAndSubtitle() {
-      const defaultValue = { title: wineList.title?.trim(), subtitle: "" }
+      const defaultValue = { title: wineList.WINE_NM?.trim(), subtitle: "" }
 
       if (!defaultValue.title) return defaultValue
 
@@ -51,7 +51,7 @@ export const WineListModel = types
         const formatted = formatDate(wineList.pubDate)
         return {
           textLabel: formatted,
-          accessibilityLabel: translate("demoPodcastListScreen.accessibility.publishLabel", {
+          accessibilityLabel: translate("wineListScreen.accessibility.publishLabel", {
             date: formatted,
           }),
         }
@@ -70,7 +70,7 @@ export const WineListModel = types
       const sDisplay = s > 0 ? s : ""
       return {
         textLabel: hDisplay + mDisplay + sDisplay,
-        accessibilityLabel: translate("demoPodcastListScreen.accessibility.durationLabel", {
+        accessibilityLabel: translate("wineListScreen.accessibility.durationLabel", {
           hours: h,
           minutes: m,
           seconds: s,

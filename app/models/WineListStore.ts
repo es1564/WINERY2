@@ -1,5 +1,5 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
-import { WineListModel, WineList } from "./WineList"
+import { WineListModel, WineList, WineListSnapshotOut } from "./WineList"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { api } from '../services/api/list-api';
 
@@ -9,6 +9,7 @@ export const WineListStoreModel = types
     wineLists: types.array(WineListModel),
     favorites: types.array(types.reference(WineListModel)),
     favoritesOnly: false,
+    wineListsTotalRecord: types.optional(types.number, 0),
   })
   .actions(withSetPropAction)
   .actions((store) => ({
@@ -25,6 +26,10 @@ export const WineListStoreModel = types
     },
     removeFavorite(wineList: WineList) {
       store.favorites.remove(wineList)
+    },
+    saveWineLists: (wineListSnapshots: WineListSnapshotOut[], totalCnt: number) => {
+      store.wineLists.replace(store.wineLists.concat(...wineListSnapshots));
+      store.wineListsTotalRecord = totalCnt;
     },
   }))
   .views((store) => ({
